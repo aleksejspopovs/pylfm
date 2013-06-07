@@ -1,0 +1,102 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Last.fm group Erlang analysis</title>
+		<meta charset='utf-8'>
+		<script>
+		var table;
+		var artist_order;
+		var lfm_base = 'http://www.last.fm/user/';
+
+		function showhide(num) {
+			var el = document.getElementById('users_' + num);
+			el.style.display = (el.style.display == 'none') ? 'block' : 'none';
+		}
+
+		function redraw_table() {
+			var container = document.createElement('ul');
+			container.id = 'container';
+
+			for (var i = 0; i < artist_order.length; i++) {
+				var artist = container.appendChild(document.createElement('li'));
+				var name = artist_order[i];
+				artist.innerHTML = '<span onclick="showhide(' + i +  ')">' +
+					name + '</span> <em>(' + table[name].length + ' user(s))</em>';
+
+				var list = artist.appendChild(document.createElement('ul'));
+				list.style.display = 'none';
+				list.id = 'users_' + i;
+				for (var j = 0; j < table[name].length; j++) {
+					var user = list.appendChild(document.createElement('li'));
+					user.innerHTML = '<a href=" ' + lfm_base + table[name][j][0] + ' ">' +
+						table[name][j][0] + '</a> <em>(' + table[name][j][1] + ' plays)</em>';
+				}
+			}
+			if (document.getElementById('container') === null) {
+				document.getElementById('main').appendChild(container);
+			} else {
+				document.getElementById('main').replaceChild(container, document.getElementById('container'));
+			}
+		}
+
+		function sort_name() {
+			function cmp(a, b) {
+				if (a == b) return 0;
+				return (a < b) ? -1 : 1;
+			}
+			artist_order.sort(cmp);
+			redraw_table();
+		}
+
+		function sort_users() {
+			function cmp(a, b) {
+				if (a == b) {
+					return 0;
+				} else if (table[a].length == table[b].length) {
+					return (a < b) ? -1 : 1;
+				} else {
+					return (table[b].length - table[a].length);
+				}
+			}
+			artist_order.sort(cmp);
+			redraw_table();
+		}
+
+		function load_data() {
+			var req = new XMLHttpRequest();
+			req.open('GET', 'lastfm-data-Erlang.json');
+			req.onreadystatechange = function () {
+				if (req.readyState == 4) {
+					document.getElementById('wait').style.display = 'none';
+					if (req.status == 200) {
+						table = JSON.parse(req.responseText);
+						artist_order = [];
+						for (var artist in table) {
+							artist_order.push(artist);
+						}
+						redraw_table();
+						document.getElementById('s_n').disabled = false;
+						document.getElementById('s_u').disabled = false;
+					} else {
+						document.getElementById('main').innerHTML = 'Sorry, I was unable to fetch the data. Please try again.';
+					}
+				}
+			}
+			req.send(null);
+		}
+		</script>
+	</head>
+	<body onload='load_data()'>
+		<h1>Last.fm group Erlang analysis</h1>
+		<p>This page shows all artists ever scrobbled by the members of group Erlang on Last.fm.</p>
+
+		<input id='s_n' type='button' value='sort by name' onclick='sort_name()' disabled>
+		<input id='s_u' type='button' value='sort by user count' onclick='sort_users()' disabled>
+
+		<p id='wait'>Please wait while the data is loaded.</p>
+
+		<div id='main'>
+
+		</div>
+	</body>
+</html>
