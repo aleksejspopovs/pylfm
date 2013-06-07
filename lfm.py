@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 import io
-import json
-import pickle
 import requests
 from lxml import etree
 

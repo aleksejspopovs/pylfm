@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 import sys
+import json
+import pickle
 from lfm import LastFM
 from lfm import try_really_hard as trh
 
