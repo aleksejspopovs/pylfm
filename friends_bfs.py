@@ -20,7 +20,7 @@ levels = int(sys.argv[2])
 print('Fetching {u}\'s friends {l} levels deep.'.format(u=username, l=levels))
 
 friends = [[username]]
-seen = set(username)
+seen = set([username])
 for i in range(1, levels + 1):
 	this_level = []
 	for prev in friends[-1]:
@@ -31,7 +31,7 @@ for i in range(1, levels + 1):
 	friends.append(this_level)
 	print('Level {i}/{t} finished, {c} friends found.'.format(i=i, t=levels, c=len(this_level)))
 
-pickle.dump(artists, open('lastfm-friends-{}.bin'.format(username), 'wb'))
-json.dump(artists, open('lastfm-friends-{}.json'.format(username), 'w'))
+pickle.dump(friends, open('lastfm-friends-{}.bin'.format(username), 'wb'))
+json.dump(friends, open('lastfm-friends-{}.json'.format(username), 'w'))
 
-print('Done, {n} artists found in total.'.format(n=len(artists)))
+print('Done.'.format(n=len(friends)))
