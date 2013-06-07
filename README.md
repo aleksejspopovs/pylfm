@@ -18,4 +18,8 @@ pylfm is developed and tested under Linux. Feedback regarding other platforms is
 Tools
 =====
 
-* `group_artists` generates a dictionary (exported in python's pickle format, as well as in JSON) containing all the artists ever scrobbled by users of a specified group toghether with the users who scrobbled them & their playcounts.
+Unless specified otherwise, tools export fetched data in python's pickle format, as well as in JSON.
+
+* `group_artists` generates a dictionary containing all the artists ever scrobbled by users of a specified group toghether with the users who scrobbled them & their playcounts.
+
+* `friends_bfs` runs a breadth-first search on a user's friend graph, fetching his friends, his friends' friends etc up to a specified level.
