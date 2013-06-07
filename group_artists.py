@@ -13,7 +13,7 @@ if len(sys.argv) != 2:
 lfm = LastFM(API_KEY)
 
 groupname = sys.argv[1]
-members = trh(lambda: lfm.get_group_members(groupname))
+members = lfm.get_group_members(groupname)
 
 print('Found {cnt} members of group "{grp}".'.format(grp=groupname, cnt=len(members)))
 

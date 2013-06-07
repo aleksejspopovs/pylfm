@@ -79,7 +79,34 @@ class LastFM:
 		res = parse_members(first)
 
 		for pg in range(2, int(first[0].get('totalPages')) + 1):
-			res += parse_members(lambda: get_page(pg))
+			res += parse_members(get_page(pg))
+
+		return res
+
+	def get_user_friends(self, username):
+		def parse_friends(data):
+			res = []
+			for a in data[0].iter('user'):
+				res.append(a.find('name').text)
+			return res
+
+		def get_page(page):
+			r = self.session.get(API_ROOT, params={
+				'method': 'user.getfriends',
+				'user': username,
+				'limit': API_PER_PAGE,
+				'page': page
+			})
+			xml = magically_parse_bs_xml(r.text)
+			assert(xml.get('status') == 'ok')
+			return xml
+
+		first = get_page(1)
+
+		res = parse_friends(first)
+
+		for pg in range(2, int(first[0].get('totalPages')) + 1):
+			res += parse_friends(get_page(pg))
 
 		return res
 
