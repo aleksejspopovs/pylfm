@@ -1,7 +1,7 @@
 pylfm
 =====
 
-pylfm is a simple Python client for Last.fm's API. It's functionality is limited to what I needed myself, but feature and/or pull requests are welcome.
+pylfm is a simple Python client for Last.fm's API. Its functionality is limited to what I needed myself, but feature and/or pull requests are welcome.
 
 pylfm lacks documentation at the moment, though the code should be simple enough. I'd love to say that the absence of documentation is only temporary, but I don't want to promise anything.
 
