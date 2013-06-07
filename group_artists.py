@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
-import last
 import sys
-from last import LastFM
-from last import try_really_hard as trh
+from lfm import LastFM
+from lfm import try_really_hard as trh
 
 API_KEY = '3166d15f23de42305e82a2c2c3e8df99'
 
