@@ -11,6 +11,8 @@ def try_really_hard(what):
 	while True:
 		try:
 			return what()
+		except KeyboardInterrupt as e:
+			raise e
 		except:
 			pass
 
