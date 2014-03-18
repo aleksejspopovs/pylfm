@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+from datetime import datetime
 import io
 import requests
 from lxml import etree
@@ -124,4 +125,59 @@ class LastFM:
 		res = {}
 		for k in page[0].getchildren():
 			res[k.tag] = k.text
+		return res
+
+	def get_user_shouts(self, username):
+		def parse_shouts(data):
+			res = []
+			for a in data[0].iter('shout'):
+				date = datetime.strptime(a.find('date').text, '%a, %d %b %Y %H:%M:%S')
+				res.append((date, a.find('author').text, a.find('body').text))
+			return res
+
+		def get_page(page):
+			r = self.session.get(API_ROOT, params={
+				'method': 'user.getshouts',
+				'user': username,
+				'limit': API_PER_PAGE,
+				'page': page
+			})
+			xml = magically_parse_bs_xml(r.text)
+			assert(xml.get('status') == 'ok')
+			return xml
+
+		first = get_page(1)
+
+		res = parse_shouts(first)
+
+		for pg in range(2, int(first[0].get('totalPages')) + 1):
+			res += parse_shouts(get_page(pg))
+
+		return res
+
+	def get_user_loved_tracks(self, username):
+		def parse_tracks(data):
+			res = []
+			for a in data[0].iter('track'):
+				res.append((a.find('artist').find('name').text, a.find('name').text))
+			return res
+
+		def get_page(page):
+			r = self.session.get(API_ROOT, params={
+				'method': 'user.getlovedtracks',
+				'user': username,
+				'limit': API_PER_PAGE,
+				'page': page
+			})
+			xml = magically_parse_bs_xml(r.text)
+			assert(xml.get('status') == 'ok')
+			return xml
+
+		first = get_page(1)
+
+		res = parse_tracks(first)
+
+		for pg in range(2, int(first[0].get('totalPages')) + 1):
+			res += parse_tracks(get_page(pg))
+
 		return res
